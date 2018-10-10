@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-[ -n "${TFENV_DEBUG}" ] && set -x
-source ${TFENV_ROOT}/libexec/helpers
+[ -n "${KOPSENV_DEBUG}" ] && set -x
+source ${KOPSENV_ROOT}/libexec/helpers
 
-[ "${#}" -gt 1 ] && error_and_die "usage: tfenv install [<version>]"
+[ "${#}" -gt 1 ] && error_and_die "usage: kopsenv install [<version>]"
 
 declare version_requested version regex
 
 if [ -z "${1}" ]; then
-  version_file="$(tfenv-version-file)"
-  if [ "${version_file}" != "${TFENV_ROOT}/version" ]; then
+  version_file="$(kopsenv-version-file)"
+  if [ "${version_file}" != "${KOPSENV_ROOT}/version" ]; then
     version_requested="$(cat ${version_file} || true)"
   fi
 else
@@ -18,7 +18,7 @@ fi
 
 if [[ "${version_requested}" =~ ^min-required$ ]]; then
   echo "Detecting minimal required version..."
-  found_min_required="$(tfenv-min-required)"
+  found_min_required="$(kopsenv-min-required)"
 
   if [[ $? -eq 0 ]]; then
       echo "Min required version is detected as ${found_min_required}"
@@ -40,45 +40,45 @@ else
 fi
 
 [ -n "${version}" ] || error_and_die "Version is not specified"
-version="$(tfenv-list-remote | grep -e "${regex}" | head -n 1)"
+version="$(kopsenv-list-remote | grep -e "${regex}" | head -n 1)"
 [ -n "${version}" ] || error_and_die "No versions matching '${1}' found in remote"
 
-dst_path="${TFENV_ROOT}/versions/${version}"
-if [ -f "${dst_path}/terraform" ]; then
-  echo "Terraform v${version} is already installed"
+dst_path="${KOPSENV_ROOT}/versions/${version}"
+if [ -f "${dst_path}/kops" ]; then
+  echo "Kops v${version} is already installed"
   exit 0
 fi
 
-TFENV_ARCH=${TFENV_ARCH:-amd64}
+KOPSENV_ARCH=${KOPSENV_ARCH:-amd64}
 case "$(uname -s)" in
   Darwin*)
-    os="darwin_${TFENV_ARCH}"
+    os="darwin_${KOPSENV_ARCH}"
     ;;
   MINGW64*)
-    os="windows_${TFENV_ARCH}"
+    os="windows_${KOPSENV_ARCH}"
     ;;
   MSYS_NT*)
-    os="windows_${TFENV_ARCH}"
+    os="windows_${KOPSENV_ARCH}"
     ;;
   CYGWIN_NT*)
-    os="windows_${TFENV_ARCH}"
+    os="windows_${KOPSENV_ARCH}"
     ;;
   *)
-    os="linux_${TFENV_ARCH}"
+    os="linux_${KOPSENV_ARCH}"
     ;;
 esac
 
 keybase_bin="$(which keybase 2>/dev/null)"
 shasum_bin="$(which shasum 2>/dev/null)"
 
-version_url="https://releases.hashicorp.com/terraform/${version}"
-tarball_name="terraform_${version}_${os}.zip"
-shasums_name="terraform_${version}_SHA256SUMS"
+version_url="https://releases.hashicorp.com/kops/${version}"
+tarball_name="kops_${version}_${os}.zip"
+shasums_name="kops_${version}_SHA256SUMS"
 
-info "Installing Terraform v${version}"
+info "Installing Kops v${version}"
 
 # Create a local temporary directory for downloads
-download_tmp="$(mktemp -d tfenv_download.XXXXXX)" || error_and_die "Unable to create temporary download directory in $(pwd)"
+download_tmp="$(mktemp -d kopsenv_download.XXXXXX)" || error_and_die "Unable to create temporary download directory in $(pwd)"
 # Clean it up in case of error
 trap "rm -rf ${download_tmp}" EXIT;
 
@@ -119,5 +119,5 @@ fi
 mkdir -p "${dst_path}" || error_and_die "Failed to make directory ${dst_path}"
 unzip "${download_tmp}/${tarball_name}" -d "${dst_path}" || error_and_die "Tarball unzip failed"
 
-info "Installation of terraform v${version} successful"
-tfenv-use "$version"
+info "Installation of kops v${version} successful"
+kopsenv-use "$version"

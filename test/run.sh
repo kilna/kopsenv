@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if [ -n "${TFENV_DEBUG}" ]; then
+if [ -n "${KOPSENV_DEBUG}" ]; then
   export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] '
   set -x
 fi
-TFENV_ROOT=$(cd $(dirname ${0})/.. && pwd)
-export PATH="${TFENV_ROOT}/bin:${PATH}"
+KOPSENV_ROOT=$(cd $(dirname ${0})/.. && pwd)
+export PATH="${KOPSENV_ROOT}/bin:${PATH}"
 
 errors=()
 if [ ${#} -ne 0 ];then

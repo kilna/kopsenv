@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Usage: tfenv version-file
-# Summary: Detect the file that sets the current tfenv version
+# Usage: kopsenv version-file
+# Summary: Detect the file that sets the current kopsenv version
 set -e
-[ -n "${TFENV_DEBUG}" ] && set -x
+[ -n "${KOPSENV_DEBUG}" ] && set -x
 
 find_local_version_file() {
   local root="${1}"
   while ! [[ "${root}" =~ ^//[^/]*$ ]]; do
-    if [ -e "${root}/.terraform-version" ]; then
-      echo "${root}/.terraform-version"
+    if [ -e "${root}/.kops-version" ]; then
+      echo "${root}/.kops-version"
       return 0
     fi
     [ -n "${root}" ] || break
@@ -17,4 +17,4 @@ find_local_version_file() {
   return 1
 }
 
-find_local_version_file "${TFENV_DIR}" || find_local_version_file "${HOME}" || echo "${TFENV_ROOT}/version"
+find_local_version_file "${KOPSENV_DIR}" || find_local_version_file "${HOME}" || echo "${KOPSENV_ROOT}/version"

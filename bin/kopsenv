@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-if [ -n "$TFENV_DEBUG" ]; then
+if [ -n "$KOPSENV_DEBUG" ]; then
   export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] '
   set -x
 fi
@@ -19,19 +19,22 @@ readlink_f() {
   echo $(pwd -P)/${file_name}
 }
 
-if [ -z "${TFENV_ROOT}" ]; then
-  TFENV_ROOT=$(cd $(dirname $(readlink_f $0))/.. && pwd)
+if [ -z "${KOPSENV_ROOT}" ]; then
+  KOPSENV_ROOT=$(cd $(dirname $(readlink_f $0))/.. && pwd)
 else
-  TFENV_ROOT="${TFENV_ROOT%/}"
+  KOPSENV_ROOT="${KOPSENV_ROOT%/}"
 fi
-export TFENV_ROOT
-PATH="${TFENV_ROOT}/libexec:${PATH}"
+export KOPSENV_ROOT
+PATH="${KOPSENV_ROOT}/libexec:${PATH}"
 export PATH
-export TFENV_DIR="${PWD}"
+export KOPSENV_DIR="${PWD}"
 
 abort() {
-  { if [ "$#" -eq 0 ]; then cat -
-    else echo "tfenv: $*"
+  {
+    if [ "$#" -eq 0 ]; then
+      cat -
+    else
+      echo "kopsenv: $*"
     fi
   } >&2
   exit 1
@@ -39,25 +42,19 @@ abort() {
 
 command="$1"
 case "$command" in
-"" )
-  { tfenv---version
-    tfenv-help
-  } | abort
-  ;;
--v | --version )
-  exec tfenv---version
-  ;;
--h | --help )
-  exec tfenv-help
-  ;;
-* )
-  command_path="$(command -v "tfenv-${command}" || true)"
-  if [ -z "$command_path" ];then
-    { echo "no such command '$command'"
-      tfenv-help
-    } | abort
-  fi
-  shift 1
-  exec "$command_path" "$@"
-  ;;
+  '')            {
+                   kopsenv-version
+                   kopsenv-help
+                 } | abort;;
+  -v|--version)  exec kopsenv-version;;
+  -h|--help)     exec kopsenv-help;;
+  *)             command_path="$(command -v "kopsenv-${command}" || true)"
+                 if [ -z "$command_path" ]; then
+                   {
+                     echo "no such command '$command'"
+                     kopsenv-help
+                   } | abort
+                 fi
+                 shift 1
+                 exec "$command_path" "$@";;
 esac

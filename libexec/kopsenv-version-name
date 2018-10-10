@@ -1,37 +1,37 @@
 #!/usr/bin/env bash
-# Summary: Show the current Terraform version
+# Summary: Show the current Kops version
 set -e
 
-[ -n "${TFENV_DEBUG}" ] && set -x
-source ${TFENV_ROOT}/libexec/helpers
+[ -n "${KOPSENV_DEBUG}" ] && set -x
+source ${KOPSENV_ROOT}/libexec/helpers
 
-[ -d "${TFENV_ROOT}/versions" ] \
-  || error_and_die "No versions of terraform installed. Please install one with: tfenv install"
+[ -d "${KOPSENV_ROOT}/versions" ] \
+  || error_and_die "No versions of kops installed. Please install one with: kopsenv install"
 
-TFENV_VERSION_FILE="$(tfenv-version-file)"
-TFENV_VERSION="$(cat "${TFENV_VERSION_FILE}" || true)"
+KOPSENV_VERSION_FILE="$(kopsenv-version-file)"
+KOPSENV_VERSION="$(cat "${KOPSENV_VERSION_FILE}" || true)"
 
-if [[ "${TFENV_VERSION}" =~ ^latest.*$ ]]; then
-  [[ "${TFENV_VERSION}" =~ ^latest\:.*$ ]] && regex="${TFENV_VERSION##*\:}"
-  version="$(\ls "${TFENV_ROOT}/versions" \
+if [[ "${KOPSENV_VERSION}" =~ ^latest.*$ ]]; then
+  [[ "${KOPSENV_VERSION}" =~ ^latest\:.*$ ]] && regex="${KOPSENV_VERSION##*\:}"
+  version="$(\ls "${KOPSENV_ROOT}/versions" \
     | sort -t'.' -k 1nr,1 -k 2nr,2 -k 3nr,3 \
     | grep -e "${regex}" \
     | head -n 1
   )"
-  [ -n "${version}" ] || error_and_die "No installed versions of terraform matched '${TFENV_VERSION}'"
-  TFENV_VERSION="${version}"
+  [ -n "${version}" ] || error_and_die "No installed versions of kops matched '${KOPSENV_VERSION}'"
+  KOPSENV_VERSION="${version}"
 fi
 
-[ -z "${TFENV_VERSION}" ] \
-  && error_and_die "Version could not be resolved (set by ${TFENV_VERSION_FILE} or tfenv use <version>)"
+[ -z "${KOPSENV_VERSION}" ] \
+  && error_and_die "Version could not be resolved (set by ${KOPSENV_VERSION_FILE} or kopsenv use <version>)"
 
 version_exists() {
   local version="${1}"
-  [ -d "${TFENV_ROOT}/versions/${version}" ]
+  [ -d "${KOPSENV_ROOT}/versions/${version}" ]
 }
 
-if version_exists "${TFENV_VERSION}"; then
-  echo "${TFENV_VERSION}"
+if version_exists "${KOPSENV_VERSION}"; then
+  echo "${KOPSENV_VERSION}"
 else
-  error_and_die "version \`${TFENV_VERSION}' is not installed (set by ${TFENV_VERSION_FILE})"
+  error_and_die "version \`${KOPSENV_VERSION}' is not installed (set by ${KOPSENV_VERSION_FILE})"
 fi

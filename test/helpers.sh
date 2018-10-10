@@ -2,11 +2,11 @@
 
 check_version() {
   v="${1}"
-  [ -n "$(terraform --version | grep -E "^Terraform v${v}(-dev)?$")" ]
+  [ -n "$(kops --version | grep -E "^Kops v${v}(-dev)?$")" ]
 }
 
 cleanup() {
   rm -rf ./versions
-  rm -rf ./.terraform-version
-  rm -rf ./min_required.tf
+  rm -rf ./.kops-version
+  rm -rf ./min_required.kops
 }

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 function error_and_die() {
-  echo -e "tfenv: $(basename ${0}): \033[0;31m[ERROR] ${1}\033[0;39m" >&2
+  echo -e "kopsenv: $(basename ${0}): \033[0;31m[ERROR] ${1}\033[0;39m" >&2
   exit 1
 }
 
 function warn_and_continue() {
-  echo -e "tfenv: $(basename ${0}): \033[0;33m[WARN] ${1}\033[0;39m" >&2
+  echo -e "kopsenv: $(basename ${0}): \033[0;33m[WARN] ${1}\033[0;39m" >&2
 }
 
 function info() {
@@ -23,4 +23,31 @@ function curlw () {
   fi
 
   curl ${TLS_OPT} "$@"
+}
+
+function jq() {
+  if ! which jq 2>&1 >/dev/null; then
+  if -x $(basename ${0})/jq
+    local arch=${KOPSENV_ARCH:-amd64}
+   case "$(uname -s)" in
+  Darwin*)
+    os="darwin_${KOPSENV_ARCH}"
+    ;;
+  MINGW64*)
+    os="windows_${KOPSENV_ARCH}"
+    ;;
+  MSYS_NT*)
+    os="windows_${KOPSENV_ARCH}"
+    ;;
+  CYGWIN_NT*)
+    os="windows_${KOPSENV_ARCH}"
+    ;;
+  *)
+    os="linux_${KOPSENV_ARCH}"
+    ;;
+esac
+
+    jq "$@"
+  fi
+  jq "$@"
 }

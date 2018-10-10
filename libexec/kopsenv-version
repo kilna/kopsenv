@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Summary: Display the version of tfenv
+# Summary: Display the version of kopsenv
 #
-# Displays the version number of this tfenv release, including the
+# Displays the version number of this kopsenv release, including the
 # current revision from git, if available.
 #
 # The format of the git revision is:
@@ -10,14 +10,14 @@
 # tagged.
 
 set -e
-[ -n "${TFENV_DEBUG}" ] && set -x
+[ -n "${KOPSENV_DEBUG}" ] && set -x
 
 version="0.6.0"
 git_revision=""
 
-if cd "${BASH_SOURCE%/*}" 2>/dev/null && git remote -v 2>/dev/null | grep -q tfenv; then
+if cd "${BASH_SOURCE%/*}" 2>/dev/null && git remote -v 2>/dev/null | grep -q kopsenv; then
   git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
   git_revision="${git_revision#v}"
 fi
 
-echo "tfenv ${git_revision:-$version}"
+echo "kopsenv ${git_revision:-$version}"

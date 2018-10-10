@@ -4,15 +4,15 @@ declare -a errors
 
 function error_and_proceed() {
   errors+=("${1}")
-  echo -e "tfenv: ${0}: Test Failed: ${1}" >&2
+  echo -e "kopsenv: ${0}: Test Failed: ${1}" >&2
 }
 
 function error_and_die() {
-  echo -e "tfenv: ${0}: ${1}" >&2
+  echo -e "kopsenv: ${0}: ${1}" >&2
   exit 1
 }
 
-[ -n "$TFENV_DEBUG" ] && set -x
+[ -n "$KOPSENV_DEBUG" ] && set -x
 source $(dirname $0)/helpers.sh \
   || error_and_die "Failed to load test helpers: $(dirname $0)/helpers.sh"
 
@@ -21,18 +21,18 @@ cleanup || error_and_die "Cleanup failed?!"
 
 v=0.2.0
 (
-  tfenv install ${v} || true
-  tfenv use ${v} || exit 1
+  kopsenv install ${v} || true
+  kopsenv use ${v} || exit 1
   check_version ${v} || exit 1
 ) || error_and_proceed "Installing specific version ${v}"
 
-echo 'terraform {
+echo 'kops {
 
   required_version = ">=0.1.0"
-}' >> min_required.tf
+}' >> min_required.kops
 
-tfenv install min-required
-tfenv use min-required
+kopsenv install min-required
+kopsenv use min-required
 
 check_version '0.1.0' || error_and_proceed "Min required version doesn't match"
 

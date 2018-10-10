@@ -4,15 +4,15 @@ declare -a errors
 
 function error_and_proceed() {
   errors+=("${1}")
-  echo -e "tfenv: ${0}: Test Failed: ${1}" >&2
+  echo -e "kopsenv: ${0}: Test Failed: ${1}" >&2
 }
 
 function error_and_die() {
-  echo -e "tfenv: ${0}: ${1}" >&2
+  echo -e "kopsenv: ${0}: ${1}" >&2
   exit 1
 }
 
-[ -n "${TFENV_DEBUG}" ] && set -x
+[ -n "${KOPSENV_DEBUG}" ] && set -x
 source $(dirname $0)/helpers.sh \
   || error_and_die "Failed to load test helpers: $(dirname $0)/helpers.sh"
 
@@ -20,12 +20,12 @@ echo "### List local versions"
 cleanup || error_and_die "Cleanup failed?!"
 
 for v in 0.7.2 0.7.13 0.9.1 0.9.2 0.9.11; do
-  tfenv install ${v} || error_and_proceed "Install of version ${v} failed"
+  kopsenv install ${v} || error_and_proceed "Install of version ${v} failed"
 done
 
-result=$(tfenv list)
+result=$(kopsenv list)
 expected="$(cat << EOS
-* 0.9.11 (set by $(tfenv version-file))
+* 0.9.11 (set by $(kopsenv version-file))
   0.9.2
   0.9.1
   0.7.13

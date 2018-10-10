@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Usage: tfenv min-required
-# Summary: Detect the minimal required version from *tf files
+# Usage: kopsenv min-required
+# Summary: Detect the minimal required version from *kops files
 set -e
-[ -n "${TFENV_DEBUG}" ] && set -x
+[ -n "${KOPSENV_DEBUG}" ] && set -x
 
 bailout() {
-    >&2 echo "Error: Could not determine required_version based on your terraform sources.
-Make sure at least one of your *tf files includes a required version section like
-terraform {
+    >&2 echo "Error: Could not determine required_version based on your kops sources.
+Make sure at least one of your *kops files includes a required version section like
+kops {
   required_version = \">= 0.0.0\"
 }
 
-see https://www.terraform.io/docs/configuration/terraform.html for details
+see https://www.kops.io/docs/configuration/kops.html for details
 
 "
 
@@ -21,7 +21,7 @@ see https://www.terraform.io/docs/configuration/terraform.html for details
 find_min_required() {
     local root="${1}"
 
-    versions=$(grep -h -R required_version --include '*tf' "$root"/* | tr -c -d '0-9. ~=!<>' )
+    versions=$(grep -h -R required_version --include '*kops' "$root"/* | tr -c -d '0-9. ~=!<>' )
 
     if [[ $versions =~ ([~=!<>]{0,2}[[:blank:]]*[0-9]+[0-9.]+)[^0-9]* ]]; then
         found_min_required=${BASH_REMATCH[1]}
@@ -42,4 +42,4 @@ find_min_required() {
     bailout
 }
 
-find_min_required "${TFENV_DIR}"
+find_min_required "${KOPSENV_DIR}"

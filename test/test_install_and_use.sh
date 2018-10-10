@@ -4,24 +4,24 @@ declare -a errors
 
 function error_and_proceed() {
   errors+=("${1}")
-  echo -e "tfenv: ${0}: Test Failed: ${1}" >&2
+  echo -e "kopsenv: ${0}: Test Failed: ${1}" >&2
 }
 
 function error_and_die() {
-  echo -e "tfenv: ${0}: ${1}" >&2
+  echo -e "kopsenv: ${0}: ${1}" >&2
   exit 1
 }
 
-[ -n "$TFENV_DEBUG" ] && set -x
+[ -n "$KOPSENV_DEBUG" ] && set -x
 source $(dirname $0)/helpers.sh \
   || error_and_die "Failed to load test helpers: $(dirname $0)/helpers.sh"
 
 echo "### Install latest version"
 cleanup || error_and_die "Cleanup failed?!"
 
-v=$(tfenv list-remote | head -n 1)
+v=$(kopsenv list-remote | head -n 1)
 (
-  tfenv install latest || exit 1
+  kopsenv install latest || exit 1
   check_version ${v} || exit 1
 ) || error_and_proceed "Installing latest version ${v}"
 
@@ -30,7 +30,7 @@ cleanup || error_and_die "Cleanup failed?!"
 
 v=0.8.8
 (
-  tfenv install latest:^0.8 || exit 1
+  kopsenv install latest:^0.8 || exit 1
   check_version ${v} || exit 1
 ) || error_and_proceed "Installing latest version ${v} with Regex"
 
@@ -39,60 +39,60 @@ cleanup || error_and_die "Cleanup failed?!"
 
 v=0.7.13
 (
-  tfenv install ${v} || exit 1
+  kopsenv install ${v} || exit 1
   check_version ${v} || exit 1
 ) || error_and_proceed "Installing specific version ${v}"
 
-echo "### Install specific .terraform-version"
+echo "### Install specific .kops-version"
 cleanup || error_and_die "Cleanup failed?!"
 
 v=0.9.1
-echo ${v} > ./.terraform-version
+echo ${v} > ./.kops-version
 (
-  tfenv install || exit 1
+  kopsenv install || exit 1
   check_version ${v} || exit 1
-) || error_and_proceed "Installing .terraform-version ${v}"
+) || error_and_proceed "Installing .kops-version ${v}"
 
-echo "### Install latest:<regex> .terraform-version"
+echo "### Install latest:<regex> .kops-version"
 cleanup || error_and_die "Cleanup failed?!"
 
-v=$(tfenv list-remote | grep -e '^0.8' | head -n 1)
-echo "latest:^0.8" > ./.terraform-version
+v=$(kopsenv list-remote | grep -e '^0.8' | head -n 1)
+echo "latest:^0.8" > ./.kops-version
 (
-  tfenv install || exit 1
+  kopsenv install || exit 1
   check_version ${v} || exit 1
-) || error_and_proceed "Installing .terraform-version ${v}"
+) || error_and_proceed "Installing .kops-version ${v}"
 
-echo "### Install with ${HOME}/.terraform-version"
+echo "### Install with ${HOME}/.kops-version"
 cleanup || error_and_die "Cleanup failed?!"
 
-if [ -f ${HOME}/.terraform-version ]; then
-  mv ${HOME}/.terraform-version ${HOME}/.terraform-version.bup
+if [ -f ${HOME}/.kops-version ]; then
+  mv ${HOME}/.kops-version ${HOME}/.terraform-version.bup
 fi
-v=$(tfenv list-remote | head -n 2 | tail -n 1)
-echo "${v}" > ${HOME}/.terraform-version
+v=$(kopsenv list-remote | head -n 2 | tail -n 1)
+echo "${v}" > ${HOME}/.kops-version
 (
-  tfenv install || exit 1
+  kopsenv install || exit 1
   check_version ${v} || exit 1
-) || error_and_proceed "Installing ${HOME}/.terraform-version ${v}"
+) || error_and_proceed "Installing ${HOME}/.kops-version ${v}"
 
-echo "### Install with parameter and use ~/.terraform-version"
-v=$(tfenv list-remote | head -n 1)
+echo "### Install with parameter and use ~/.kops-version"
+v=$(kopsenv list-remote | head -n 1)
 (
-  tfenv install ${v} || exit 1
+  kopsenv install ${v} || exit 1
   check_version ${v} || exit 1
-) || error_and_proceed "Use $HOME/.terraform-version ${v}"
+) || error_and_proceed "Use $HOME/.kops-version ${v}"
 
-echo "### Use with parameter and  ~/.terraform-version"
-v=$(tfenv list-remote | head -n 2 | tail -n 1)
+echo "### Use with parameter and  ~/.kops-version"
+v=$(kopsenv list-remote | head -n 2 | tail -n 1)
 (
-  tfenv use ${v} || exit 1
+  kopsenv use ${v} || exit 1
   check_version ${v} || exit 1
-) || error_and_proceed "Use $HOME/.terraform-version ${v}"
+) || error_and_proceed "Use $HOME/.kops-version ${v}"
 
-rm $HOME/.terraform-version
-if [ -f $HOME/.terraform-version.bup ]; then
-  mv $HOME/.terraform-version.bup $HOME/.terraform-version
+rm $HOME/.kops-version
+if [ -f $HOME/.kops-version.bup ]; then
+  mv $HOME/.kops-version.bup $HOME/.terraform-version
 fi
 
 echo "### Install invalid specific version"
@@ -100,7 +100,7 @@ cleanup || error_and_die "Cleanup failed?!"
 
 v=9.9.9
 expected_error_message="No versions matching '${v}' found in remote"
-[ -z "$(tfenv install ${v} 2>&1 | grep "${expected_error_message}")" ] \
+[ -z "$(kopsenv install ${v} 2>&1 | grep "${expected_error_message}")" ] \
   && error_and_proceed "Installing invalid version ${v}"
 
 echo "### Install invalid latest:<regex> version"
@@ -108,7 +108,7 @@ cleanup || error_and_die "Cleanup failed?!"
 
 v="latest:word"
 expected_error_message="No versions matching '${v}' found in remote"
-[ -z "$(tfenv install ${v} 2>&1 | grep "${expected_error_message}")" ] \
+[ -z "$(kopsenv install ${v} 2>&1 | grep "${expected_error_message}")" ] \
   && error_and_proceed "Installing invalid version ${v}"
 
 if [ ${#errors[@]} -gt 0 ]; then

@@ -1,4 +1,4 @@
 versions/
 version
-.terraform-version
-bin/terraform-*
+.kops-version
+bin/kops-*
