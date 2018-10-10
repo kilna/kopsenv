@@ -1,0 +1,4 @@
+versions/
+version
+.terraform-version
+bin/terraform-*
