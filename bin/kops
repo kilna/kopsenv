@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -e
-[ -n "$KOPSENV_DEBUG" ] && set -x
-
-program="${0##*/}"
-exec "$(dirname `which $0`)"/kopsenv exec "$@"
