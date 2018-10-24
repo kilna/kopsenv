@@ -8,4 +8,12 @@ if [ ${#} -ne 0 ];then
   exit 1
 fi
 
-curlw -sf https://releases.hashicorp.com/kops/ | grep -o -E "[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta)[0-9]+)?" | uniq
+# This is a bit hacky since it's relying on the whitespace formatting of
+# JSON output from the github API, but there's no other reasonable way to
+# get a list of the current kops versions using only POSIX tools
+curl -sL https://api.github.com/repos/kubernetes/kops/releases \
+  | grep tag_name \
+  | sed 's/",$//; s/^.*"//' \
+  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4
+
+# curl -sL https://api.github.com/repos/kubernetes/kops/releases | grep browser_download_url | grep linux
