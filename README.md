@@ -1,11 +1,4 @@
 # kopsenv
-<<<<<<< HEAD
-
-[Kops](https://kubernetes.io/docs/setup/custom-cloud/kops/) version manager inspired by [tfenv](https://github.com/Zordrak/tfenv)
-
-This project is not yet working.
-
-=======
 
 [Kops](https://github.com/kubernetes/kops) version manager inspired by [tfenv](https://github.com/Zordrak/tfenv).
 
@@ -171,4 +164,3 @@ Code was in turn derived from:
 - [tfenv](https://github.com/Zordrak/tfenv/blob/master/LICENSE)
 - [rbenv](https://github.com/rbenv/rbenv/blob/master/LICENSE)
 
->>>>>>> develop
