@@ -157,10 +157,5 @@ $ rm -rf /some/path/to/kopsenv
 
 ## LICENSE
 
-- [kopsenv](https://github.com/kilna/kopsenv/blob/master/LICENSE)
-
-Code was in turn derived from:
-
-- [tfenv](https://github.com/Zordrak/tfenv/blob/master/LICENSE)
-- [rbenv](https://github.com/rbenv/rbenv/blob/master/LICENSE)
+[kopsenv](https://github.com/kilna/kopsenv/blob/master/LICENSE) - derived from: [tfenv](https://github.com/Zordrak/tfenv/blob/master/LICENSE) / [rbenv](https://github.com/rbenv/rbenv/blob/master/LICENSE)
 
