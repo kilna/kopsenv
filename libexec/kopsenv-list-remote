@@ -8,12 +8,19 @@ if [ ${#} -ne 0 ];then
   exit 1
 fi
 
-# This is a bit hacky since it's relying on the whitespace formatting of
-# JSON output from the github API, but there's no other reasonable way to
-# get a list of the current kops versions using only POSIX tools
-curl -sL https://api.github.com/repos/kubernetes/kops/releases \
-  | grep tag_name \
-  | sed 's/",$//; s/^.*"//' \
-  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4
+platform="$(kops_platform)"
+(( "$?" )) && exit $?
 
-# curl -sL https://api.github.com/repos/kubernetes/kops/releases | grep browser_download_url | grep linux
+# This is a bit hacky since it's relying on the formatting of URLs
+# returned in JSON output from the github API, but there's no other
+# reasonable way to get a list of the current kops versions using
+# only curl + POSIX tools
+json=$(curlw -s -L https://api.github.com/repos/kubernetes/kops/releases)
+(( "$?" )) && exit $?
+
+echo "$json" \
+  | grep 'download/[0-9\.]\{1,\}/kops-'$platform'"' \
+  | sed 's/^.*download\///; s/\/.*$//' \
+  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
+  | uniq
+

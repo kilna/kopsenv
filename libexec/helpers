@@ -25,29 +25,19 @@ function curlw () {
   curl ${TLS_OPT} "$@"
 }
 
-function jq() {
-  if ! which jq 2>&1 >/dev/null; then
-  if -x $(basename ${0})/jq
-    local arch=${KOPSENV_ARCH:-amd64}
-   case "$(uname -s)" in
-  Darwin*)
-    os="darwin_${KOPSENV_ARCH}"
-    ;;
-  MINGW64*)
-    os="windows_${KOPSENV_ARCH}"
-    ;;
-  MSYS_NT*)
-    os="windows_${KOPSENV_ARCH}"
-    ;;
-  CYGWIN_NT*)
-    os="windows_${KOPSENV_ARCH}"
-    ;;
-  *)
-    os="linux_${KOPSENV_ARCH}"
-    ;;
-esac
-
-    jq "$@"
-  fi
-  jq "$@"
+kops_platform() {
+  local arch
+  case "$(uname -m)" in
+    x86_64) arch='amd64';;
+    *)      error_and_die "Unrecognized/unsupported architecture $(uname -m)";;
+  esac
+  local os
+  case "$(uname -s)" in
+    Darwin*)                      os="darwin";;
+    MINGW64*|MSYS_NT*|CYGWIN_NT*) os="windows";;
+    Linux*)                       os="linux";;
+    *)                            error_and_die "Unrecognized/unsupported kernel $(uname -s)"
+  esac
+  echo "$os-$arch"
 }
+
