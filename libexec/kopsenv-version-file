@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Usage: kopsenv version-file
+# Summary: Detect the file that sets the current kopsenv version
+set -e
+[ -n "${KOPSENV_DEBUG}" ] && set -x
+
+find_local_version_file() {
+  local root="${1}"
+  while ! [[ "${root}" =~ ^//[^/]*$ ]]; do
+    if [ -e "${root}/.kops-version" ]; then
+      echo "${root}/.kops-version"
+      return 0
+    fi
+    [ -n "${root}" ] || break
+    root="${root%/*}"
+  done
+  return 1
+}
+
+find_local_version_file "${KOPSENV_DIR}" || find_local_version_file "${HOME}" || echo "${KOPSENV_ROOT}/version"

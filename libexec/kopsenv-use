@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+[ -n "${KOPSENV_DEBUG}" ] && set -x
+source ${KOPSENV_ROOT}/libexec/helpers
+
+[ ${#} -ne 1 ] && error_and_die "usage: kopsenv use <version>"
+
+declare version_requested version regex
+
+version_requested="${1}"
+
+if [[ "${version_requested}" =~ ^min-required$ ]]; then
+  echo "Detecting minimal required version..."
+  found_min_required="$(kopsenv-min-required)"
+
+  if [[ $? -eq 0 ]]; then
+      echo "Min required version is detected as ${found_min_required}"
+      version_requested=${found_min_required}
+  else
+    exit 1
+  fi
+fi
+
+if [[ "${version_requested}" =~ ^latest\:.*$ ]]; then
+  version="${version_requested%%\:*}"
+  regex="${version_requested##*\:}"
+elif [[ "${version_requested}" =~ ^latest$ ]]; then
+  version="${version_requested}"
+  regex=""
+else
+  version="${version_requested}"
+  regex="^${version_requested}$"
+fi
+
+[ -d "${KOPSENV_ROOT}/versions" ] \
+  || error_and_die "No versions of kops installed. Please install one with: kopsenv install"
+
+version="$(\ls "${KOPSENV_ROOT}/versions" \
+  | sort -t'.' -k 1nr,1 -k 2nr,2 -k 3nr,3 \
+  | grep -e "${regex}" \
+  | head -n 1
+)"
+
+[ -n "${version}" ] || error_and_die "No installed versions of kops matched '${1}'"
+
+target_path=${KOPSENV_ROOT}/versions/${version}
+[ -f ${target_path}/kops ] \
+  || error_and_die "Version directory for ${version} is present, but the kops binary is not! Manual intervention required."
+[ -x ${target_path}/kops ] \
+  || error_and_die "Version directory for ${version} is present, but the kops binary is not executable! Manual intervention required. "
+
+info "Switching to v${version}"
+echo "${version}" > "$(kopsenv-version-file)" || error_and_die "'switch to v${version} failed'"
+kops version client 1>/dev/null || error_and_die "'kops version client' failed. Something is seriously wrong"
+info "Switching completed"
