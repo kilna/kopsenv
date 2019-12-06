@@ -121,6 +121,15 @@ $ kopsenv list-remote
 ...
 ```
 
+## Configuration directory
+
+If you would like to configure a different directory than the `KOPSENV_ROOT` to install and manager your Kops versions,
+you can specify a `KOPSENV_CONF_DIR` environment variable.
+
+```sh
+export KOPSENV_CONF_DIR="$HOME/.kopsversions/
+```
+
 ## .kops-version
 
 If you put `.kops-version` file on your project root, or in your home directory, kopsenv detects it and use the version written in it. If the version is `latest` or `latest:<regex>`, the latest matching version currently installed will be selected.
