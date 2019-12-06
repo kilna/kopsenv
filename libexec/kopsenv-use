@@ -32,10 +32,10 @@ else
   regex="^${version_requested}$"
 fi
 
-[ -d "${KOPSENV_ROOT}/versions" ] \
+[ -d "${KOPSENV_CONF_DIR}/versions" ] \
   || error_and_die "No versions of kops installed. Please install one with: kopsenv install"
 
-version="$(\ls "${KOPSENV_ROOT}/versions" \
+version="$(\ls "${KOPSENV_CONF_DIR}/versions" \
   | sort -t'.' -k 1nr,1 -k 2nr,2 -k 3nr,3 \
   | grep -e "${regex}" \
   | head -n 1
@@ -43,7 +43,7 @@ version="$(\ls "${KOPSENV_ROOT}/versions" \
 
 [ -n "${version}" ] || error_and_die "No installed versions of kops matched '${1}'"
 
-target_path=${KOPSENV_ROOT}/versions/${version}
+target_path=${KOPSENV_CONF_DIR}/versions/${version}
 [ -f ${target_path}/kops ] \
   || error_and_die "Version directory for ${version} is present, but the kops binary is not! Manual intervention required."
 [ -x ${target_path}/kops ] \
