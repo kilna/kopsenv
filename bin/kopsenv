@@ -24,8 +24,19 @@ if [ -z "${KOPSENV_ROOT}" ]; then
 else
   KOPSENV_ROOT="${KOPSENV_ROOT%/}"
 fi
+
 export KOPSENV_ROOT
+
+if [ -z "${KOPSENV_CONF_DIR}" ]; then
+  KOPSENV_CONF_DIR="${KOPSENV_ROOT}"
+else
+  KOPSENV_CONF_DIR="${KOPSENV_CONF_DIR%/}"
+fi
+
+export KOPSENV_CONF_DIR
+
 PATH="${KOPSENV_ROOT}/libexec:${PATH}"
+
 export PATH
 export KOPSENV_DIR="${PWD}"
 

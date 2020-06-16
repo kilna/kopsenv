@@ -11,12 +11,12 @@
 #   kopsenv exec plan
 #
 # is equivalent to:
-#   PATH="$KOPSENV_ROOT/versions/0.7.0/bin:$PATH" kops plan
+#   PATH="$KOPSENV_CONF_DIR/versions/0.7.0/bin:$PATH" kops plan
 
 set -e
 [ -n "${KOPSENV_DEBUG}" ] && set -x
 
 export KOPSENV_VERSION="$(kopsenv-version-name)"
-KOPS_BIN_PATH="${KOPSENV_ROOT}/versions/${KOPSENV_VERSION}/kops"
+KOPS_BIN_PATH="${KOPSENV_CONF_DIR}/versions/${KOPSENV_VERSION}/kops"
 export PATH="${KOPS_BIN_PATH}:${PATH}"
 "${KOPS_BIN_PATH}" "${@}"

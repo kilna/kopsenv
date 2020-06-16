@@ -5,7 +5,7 @@ set -e
 [ -n "${KOPSENV_DEBUG}" ] && set -x
 source ${KOPSENV_ROOT}/libexec/helpers
 
-[ -d "${KOPSENV_ROOT}/versions" ] \
+[ -d "${KOPSENV_CONF_DIR}/versions" ] \
   || error_and_die "No versions of kops installed. Please install one with: kopsenv install"
 
 KOPSENV_VERSION_FILE="$(kopsenv-version-file)"
@@ -13,7 +13,7 @@ KOPSENV_VERSION="$(cat "${KOPSENV_VERSION_FILE}" || true)"
 
 if [[ "${KOPSENV_VERSION}" =~ ^latest.*$ ]]; then
   [[ "${KOPSENV_VERSION}" =~ ^latest\:.*$ ]] && regex="${KOPSENV_VERSION##*\:}"
-  version="$(\ls "${KOPSENV_ROOT}/versions" \
+  version="$(\ls "${KOPSENV_CONF_DIR}/versions" \
     | sort -t'.' -k 1nr,1 -k 2nr,2 -k 3nr,3 \
     | grep -e "${regex}" \
     | head -n 1
@@ -27,7 +27,7 @@ fi
 
 version_exists() {
   local version="${1}"
-  [ -d "${KOPSENV_ROOT}/versions/${version}" ]
+  [ -d "${KOPSENV_CONF_DIR}/versions/${version}" ]
 }
 
 if version_exists "${KOPSENV_VERSION}"; then

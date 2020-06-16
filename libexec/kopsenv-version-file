@@ -17,4 +17,4 @@ find_local_version_file() {
   return 1
 }
 
-find_local_version_file "${KOPSENV_DIR}" || find_local_version_file "${HOME}" || echo "${KOPSENV_ROOT}/version"
+find_local_version_file "${KOPSENV_DIR}" || find_local_version_file "${HOME}" || echo "${KOPSENV_CONF_DIR}/version"
