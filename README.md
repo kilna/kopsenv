@@ -33,10 +33,10 @@ Currently kopsenv supports the following OSes, on x86-64 bit archtecture only:
   ```sh
   $ ln -s ~/.kopsenv/bin/* /usr/local/bin
   ```
-  
+
   On Ubuntu/Debian touching `/usr/local/bin` might require sudo access, but you can create `${HOME}/bin` or `${HOME}/.local/bin` and on next login it will get added to the session `$PATH`
   or by running `. ${HOME}/.profile` it will get added to the current shell session's `$PATH`.
-  
+
   ```sh
   $ mkdir -p ~/.local/bin/
   $ . ~/.profile
@@ -47,6 +47,9 @@ Currently kopsenv supports the following OSes, on x86-64 bit archtecture only:
 ## Usage
 
 ### kopsenv install [version]
+
+
+**IMPORTANT:** Be sure to run `brew uninstall kops` before installing kopsenv
 
 Install a specific version of Kops. Available options for version:
 
