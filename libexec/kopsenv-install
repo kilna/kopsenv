@@ -37,7 +37,13 @@ if [ -f "${dst_path}/kops" ]; then
   exit 0
 fi
 
-version_url="https://github.com/kubernetes/kops/releases/download/${version}"
+# Check if version_requested contains "invoca", and if does, get version from the Invoca Kops fork
+if [[ "${version_requested}" =~ "invoca" ]]; then
+  version_url="https://api.github.com/repos/Invoca/kops/releases/download/${version}"
+else
+  version_url="https://github.com/kubernetes/kops/releases/download/${version}"
+fi
+
 exe_name="kops-$(kops_platform)"
 (( "$?" )) && exit $?
 
@@ -57,4 +63,3 @@ chmod a+x "${dst_path}/kops" || error_and_die "Unable to set execute on ${dst_pa
 
 info "Installation of kops v${version} successful"
 kopsenv-use "$version"
-

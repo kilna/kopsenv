@@ -15,7 +15,11 @@ platform="$(kops_platform)"
 # returned in JSON output from the github API, but there's no other
 # reasonable way to get a list of the current kops versions using
 # only curl + POSIX tools
-json=$(curlw -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
+
+upstream_json=$(curlw -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
+fork_json=$(curlw -s -L https://api.github.com/repos/Invoca/kops/releases/latest)
+json="${upstream_json}${fork_json}"
+
 (( "$?" )) && exit $?
 
 echo "$json" \
