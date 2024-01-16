@@ -11,13 +11,11 @@ fi
 platform="$(kops_platform)"
 (( "$?" )) && exit $?
 
-# This is a bit hacky since it's relying on the formatting of URLs
-# returned in JSON output from the github API, but there's no other
-# reasonable way to get a list of the current kops versions using
-# only curl + POSIX tools
 
+
+# List versions from both the Invoca Fork + Upstream Kops repos.  We will u
 upstream_json=$(curlw -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
-fork_json=$(curlw -s -L https://api.github.com/repos/Invoca/kops/releases/latest)
+fork_json=$(curlw -s -L https://api.github.com/repos/Invoca/kops/releases?per_page=100)
 json="${upstream_json}${fork_json}"
 
 (( "$?" )) && exit $?
