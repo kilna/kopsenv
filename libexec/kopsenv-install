@@ -63,5 +63,5 @@ cp "${download_tmp}/${exe_name}" "${dst_path}/kops" || error_and_die "Copy of ${
 
 chmod a+x "${dst_path}/kops" || error_and_die "Unable to set execute on ${dst_path}/kops"
 
-info "Installation of kops v${version} successful"
+info "Installation of kops ${version} successful"
 kopsenv-use "$version"

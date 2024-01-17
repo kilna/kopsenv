@@ -12,25 +12,25 @@ fi
 platform="$(kops_platform)"
 (( "$?" )) && exit $?
 
-# List versions from both the Invoca Fork + Upstream Kops repos. We will use the latest version from either repo.
-upstream_json=$(curl -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
-forked_json=$(curl -s -L https://api.github.com/repos/Invoca/kops/releases?per_page=100)
+# Get releases from both the Invoca fork (https://github.com/Invoca/kops) and the upstream Kops repo (https://github
+# .com/kubernetes/kops)
+urls=("https://api.github.com/repos/kubernetes/kops/releases" "https://api.github.com/repos/Invoca/kops/releases")
 
-(( "$?" )) && exit $?
+all_versions=""
 
-upstream_versions=$(echo "$upstream_json" \
-  | grep 'tag_name' \
-  | sed -E 's/.*"tag_name": "([^"]+)",.*/\1/' \
-  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
-  | uniq)
+for url in "${urls[@]}"; do
+  json=$(curl -s -L "$url?per_page=100")
+  (( "$?" )) && exit $?
 
-forked_versions=$(echo "$forked_json" \
-  | grep 'tag_name' \
-  | sed -E 's/.*"tag_name": "([^"]+)",.*/\1/' \
-  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
-  | uniq)
+  versions=$(echo "$json" \
+    | grep 'tag_name' \
+    | sed -E 's/.*"tag_name": "([^"]+)",.*/\1/' \
+    | grep -v -E '(alpha|beta|gamma)' \
+    | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
+    | uniq)
 
-all_versions=$(echo -e "$upstream_versions\n$forked_versions" | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 | uniq)
+  all_versions+="$versions"$'\n'
+done
 
-echo "$all_versions"
-
+# Print versions out in descending order, regardless of which repo they come from
+echo "$all_versions" | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 | uniq
