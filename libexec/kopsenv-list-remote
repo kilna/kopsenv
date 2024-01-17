@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+
 set -e
 [ -n "${KOPSENV_DEBUG}" ] && set -x
 source ${KOPSENV_ROOT}/libexec/helpers
 
-if [ ${#} -ne 0 ];then
+if [ ${#} -ne 0 ]; then
   echo "usage: kopsenv list-remote" 1>&2
   exit 1
 fi
@@ -11,18 +12,25 @@ fi
 platform="$(kops_platform)"
 (( "$?" )) && exit $?
 
-
-
-# List versions from both the Invoca Fork + Upstream Kops repos.  We will u
-upstream_json=$(curlw -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
-fork_json=$(curlw -s -L https://api.github.com/repos/Invoca/kops/releases?per_page=100)
-json="${upstream_json}${fork_json}"
+# List versions from both the Invoca Fork + Upstream Kops repos. We will use the latest version from either repo.
+upstream_json=$(curl -s -L https://api.github.com/repos/kubernetes/kops/releases?per_page=100)
+forked_json=$(curl -s -L https://api.github.com/repos/Invoca/kops/releases?per_page=100)
 
 (( "$?" )) && exit $?
 
-echo "$json" \
-  | grep 'download/v[0-9\.]\{1,\}/kops-'$platform'"' \
-  | sed 's/^.*download\///; s/\/.*$//' \
+upstream_versions=$(echo "$upstream_json" \
+  | grep 'tag_name' \
+  | sed -E 's/.*"tag_name": "([^"]+)",.*/\1/' \
   | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
-  | uniq
+  | uniq)
+
+forked_versions=$(echo "$forked_json" \
+  | grep 'tag_name' \
+  | sed -E 's/.*"tag_name": "([^"]+)",.*/\1/' \
+  | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 \
+  | uniq)
+
+all_versions=$(echo -e "$upstream_versions\n$forked_versions" | sort -t. -rn -k1,1 -k2,2 -k3,3 -k4,4 | uniq)
+
+echo "$all_versions"
 

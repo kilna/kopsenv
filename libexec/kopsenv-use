@@ -14,8 +14,8 @@ if [[ "${version_requested}" =~ ^min-required$ ]]; then
   found_min_required="$(kopsenv-min-required)"
 
   if [[ $? -eq 0 ]]; then
-      echo "Min required version is detected as ${found_min_required}"
-      version_requested=${found_min_required}
+    echo "Min required version is detected as ${found_min_required}"
+    version_requested=${found_min_required}
   else
     exit 1
   fi
@@ -51,5 +51,5 @@ target_path=${KOPSENV_ROOT}/versions/${version}
 
 info "Switching to v${version}"
 echo "${version}" > "$(kopsenv-version-file)" || error_and_die "'switch to v${version} failed'"
-kops version client 1>/dev/null || error_and_die "'kops version client' failed. Something is seriously wrong"
+kops version client 1>/dev/null 2>&1 || error_and_die "'kops version client' failed. Something is seriously wrong"
 info "Switching completed"
