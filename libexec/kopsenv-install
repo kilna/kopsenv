@@ -40,45 +40,26 @@ fi
 # Check if version_requested contains "invoca", and if does, get version from the Invoca Kops fork
 if [[ "${version_requested}" =~ "invoca" ]]; then
   exe_name="kops"
-  version_url="https://github.com/Invoca/kops/releases/download/${version}/${exe_name}"
+  version_url="https://github.com/Invoca/kops/releases/download/${version}"
 else
-exe_name="kops-$(kops_platform)"
+  exe_name="kops-$(kops_platform)"
   version_url="https://github.com/kubernetes/kops/releases/download/${version}"
 fi
 
-(( "$?" )) && exit $?
+(("$?")) && exit $?
 
 info "Installing Kops ${version}"
 
 # Create a local temporary directory for downloads
 download_tmp="$(mktemp -d kopsenv_download.XXXXXX)" || error_and_die "Unable to create temporary download directory in $(pwd)"
 # Clean it up in case of error
-trap "rm -rf ${download_tmp}" EXIT;
-
-if [[ "${version_requested}" =~ "invoca" ]]; then
-
-  exe_name="kops"
-
-info "Downloading release from ${version_url}"
-curlw -# -f -L -o "${download_tmp}/${exe_name}" "${version_url}" || error_and_die "Download failed"
-
-mkdir -p "${dst_path}" || error_and_die "Failed to make directory ${dst_path}"
-cp "${download_tmp}/${exe_name}" "${dst_path}/kops" || error_and_die "Copy of ${exe_name} from ${download_tmp} to ${dst_path} failed"
-chmod a+x "${dst_path}/kops" || error_and_die "Unable to set execute on ${dst_path}/kops"
-
-
-
-  else
+trap "rm -rf ${download_tmp}" EXIT
 
 info "Downloading release from ${version_url}/${exe_name}"
 curlw -# -f -L -o "${download_tmp}/${exe_name}" "${version_url}/${exe_name}" || error_and_die "Download failed"
 
 mkdir -p "${dst_path}" || error_and_die "Failed to make directory ${dst_path}"
-tar -cvf "${download_tmp}/${exe_name}"
 cp "${download_tmp}/${exe_name}" "${dst_path}/kops" || error_and_die "Copy of ${exe_name} from ${download_tmp} to ${dst_path} failed"
-
-
-fi
 
 chmod a+x "${dst_path}/kops" || error_and_die "Unable to set execute on ${dst_path}/kops"
 
