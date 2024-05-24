@@ -2,8 +2,6 @@
 
 [Kops](https://github.com/kubernetes/kops) version manager inspired by [tfenv](https://github.com/Zordrak/tfenv).
 
-I'm no longer using kops, so if you want to take over this project, email kilna@kilna.com
-
 ## Support
 
 Currently kopsenv supports the following OSes, on x86-64 bit archtecture only:
@@ -47,7 +45,6 @@ Currently kopsenv supports the following OSes, on x86-64 bit archtecture only:
 ## Usage
 
 ### kopsenv install [version]
-
 
 **IMPORTANT:** Be sure to run `brew uninstall kops` before installing kopsenv
 
