@@ -33,7 +33,7 @@ version="$(kopsenv-list-remote | grep -e "${regex}" | head -n 1)"
 
 dst_path="${KOPSENV_ROOT}/versions/${version}"
 if [ -f "${dst_path}/kops" ]; then
-  echo "Kops v${version} is already installed"
+  echo "Kops ${version} is already installed"
   exit 0
 fi
 
@@ -41,7 +41,7 @@ version_url="https://github.com/kubernetes/kops/releases/download/${version}"
 exe_name="kops-$(kops_platform)"
 (( "$?" )) && exit $?
 
-info "Installing Kops v${version}"
+info "Installing Kops ${version}"
 
 # Create a local temporary directory for downloads
 download_tmp="$(mktemp -d kopsenv_download.XXXXXX)" || error_and_die "Unable to create temporary download directory in $(pwd)"
@@ -55,6 +55,6 @@ mkdir -p "${dst_path}" || error_and_die "Failed to make directory ${dst_path}"
 cp "${download_tmp}/${exe_name}" "${dst_path}/kops" || error_and_die "Copy of ${exe_name} from ${download_tmp} to ${dst_path} failed"
 chmod a+x "${dst_path}/kops" || error_and_die "Unable to set execute on ${dst_path}/kops"
 
-info "Installation of kops v${version} successful"
+info "Installation of kops ${version} successful"
 kopsenv-use "$version"
 

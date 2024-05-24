@@ -49,7 +49,7 @@ target_path=${KOPSENV_ROOT}/versions/${version}
 [ -x ${target_path}/kops ] \
   || error_and_die "Version directory for ${version} is present, but the kops binary is not executable! Manual intervention required. "
 
-info "Switching to v${version}"
-echo "${version}" > "$(kopsenv-version-file)" || error_and_die "'switch to v${version} failed'"
+info "Switching to ${version}"
+echo "${version}" > "$(kopsenv-version-file)" || error_and_die "'switch to ${version} failed'"
 kops version client 1>/dev/null || error_and_die "'kops version client' failed. Something is seriously wrong"
 info "Switching completed"

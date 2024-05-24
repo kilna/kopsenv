@@ -33,8 +33,8 @@ version="$(kopsenv-list | sed -E 's/^(\*| )? //g; s/ \(set by .+\)$//' | grep -e
 
 dst_path="${KOPSENV_ROOT}/versions/${version}"
 if [ -f "${dst_path}/kops" ]; then 
-  info "Uninstall Kops v${version}"
+  info "Uninstall Kops ${version}"
   rm -r "${dst_path}"
-  info "\033[0;32mKops v${version} is successfully uninstalled\033[0;39m"
+  info "\033[0;32mKops ${version} is successfully uninstalled\033[0;39m"
 fi
 
